@@ -3,12 +3,10 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'event.dart';
 import 'message.dart';
 import 'ns_conn.dart';
+import 'error.dart';
 
-import 'web_socket_channel_stub.dart'
-    if (dart.library.html) 'web_socket_channel_html.dart'
-    if (dart.library.io) 'web_socket_channel_io.dart';
 
-typedef messageHandlerFunc =  Function(NsConn ns, Message msg) ;
+typedef messageHandlerFunc =  Function(NsConn ns, Message msg);
 typedef waitingMessageFunc = void Function(Message msg);
 
 class Conn {
@@ -223,14 +221,6 @@ class Conn {
   }
 }
 
-Future<Conn> dial(String url, {Map<String, Map<String, messageHandlerFunc>> connHandler, connHeader}) async {
-  WebSocketChannel channel = connectWebSocket(url);
-
-  channel?.sink?.add(ackBinary);
-
-  return new Conn(channel: channel, namespaces: connHandler);
-}
-
 SocketError fireEvent(NsConn ns, Message msg) {
   if (ns.events[msg.event] != null) {
     return ns.events[msg.event](ns, msg);
@@ -242,16 +232,6 @@ SocketError fireEvent(NsConn ns, Message msg) {
 
   return null;
 }
-
-class SocketError extends Error {
-  String error;
-
-  SocketError(this.error);
-}
-
-var errBadNamespace = new SocketError("bad namespace");
-var errorClosed = new SocketError("use of closed connection");
-var errWrite = new SocketError("write closed");
 
 String serializeMessage(Message msg) {
   // TODO

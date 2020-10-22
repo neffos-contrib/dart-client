@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'event.dart';
-
 part 'message.g.dart';
 
 @JsonSerializable()
@@ -11,6 +10,7 @@ class Message {
 
   String event;
 
+  @JsonKey(nullable: true)
   bool isError;
 
   bool isForced;
@@ -74,4 +74,36 @@ class Message {
 
   /// Serialize to json
   Map<String, dynamic> toJson() => _$MessageToJson(this);
+
+  Message copyWith({
+    String body,
+    String err,
+    String event,
+    bool isError,
+    bool isForced,
+    bool isInvalid,
+    bool isLocal,
+    bool isNative,
+    bool isNoOp,
+    String namespace,
+    String room,
+    bool setBinary,
+    String wait,
+  }) {
+    return new Message(
+      body: body ?? this.body,
+      err: err ?? this.err,
+      event: event ?? this.event,
+      isError: isError ?? this.isError,
+      isForced: isForced ?? this.isForced,
+      isInvalid: isInvalid ?? this.isInvalid,
+      isLocal: isLocal ?? this.isLocal,
+      isNative: isNative ?? this.isNative,
+      isNoOp: isNoOp ?? this.isNoOp,
+      namespace: namespace ?? this.namespace,
+      room: room ?? this.room,
+      setBinary: setBinary ?? this.setBinary,
+      wait: wait ?? this.wait,
+    );
+  }
 }
